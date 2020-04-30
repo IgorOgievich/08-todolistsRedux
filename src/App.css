@@ -26,3 +26,13 @@
 .error {
   border-color: red;
 }
+
+.todoList-button {
+  display: flex;
+}
+.todoList-button button {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  margin-top: 15px;
+}

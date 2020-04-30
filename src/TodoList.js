@@ -109,8 +109,10 @@ class TodoList extends React.Component {
         return (
                 <div className="todoList">
                     <div className="todoList-header">
+                        <div className="todoList-button">
                             <TodoListTitle title={this.props.title}/>
                         <button onClick={this.deleteTodolist}>x</button>
+                        </div>
                             <AddNewItemForm addItem={this.addTask} />
                     </div>
 
