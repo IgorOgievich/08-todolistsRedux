@@ -5,13 +5,21 @@ import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./TodoListTitle";
 import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
+import {
+    ADD_TASK,
+    addTaskAC,
+    CHANGE_TASK,
+    changeTaskAC,
+    DELETE_TASK,
+    DELETE_TODOLIST, deleteTaskAC,
+    deleteTodolistAC
+} from "./reducer";
 
 class TodoList extends React.Component {
 
     constructor(props) {
         super(props);
         this.newTasksTitileRef = React.createRef();
-
     }
 
     componentDidMount() {
@@ -147,36 +155,16 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps =(dispatch) => {
     return{
         addTask: (newTask, todolistsId) => {
-            const action = {
-                type: "ADD-TASK",
-                newTask: newTask,
-                todolistsId: todolistsId,
-            };
-            dispatch(action)
+            dispatch(addTaskAC(newTask, todolistsId))
         },
         changeTask: (taskId, obj, todolistsId) => {
-            const action = {
-                type: "CHANGE-TASK",
-                taskId: taskId,
-                obj: obj,
-                todolistsId: todolistsId
-            };
-            dispatch(action)
+            dispatch(changeTaskAC(taskId, obj, todolistsId))
         },
         deleteTodolist: (todolistsId) => {
-            const action = {
-                type: "DELETE-TODOLIST",
-                todolistsId: todolistsId
-            };
-            dispatch(action)
+            dispatch(deleteTodolistAC(todolistsId))
         },
         deleteTask: (todolistsId,taskId) => {
-            const action ={
-                type: "DELETE-TASK",
-                todolistsId: todolistsId,
-                taskId: taskId
-            };
-            dispatch(action)
+            dispatch(deleteTaskAC(todolistsId,taskId))
         }
     }
 };
