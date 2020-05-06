@@ -1,10 +1,8 @@
 import {createStore} from "redux";
 
-
 const initialState = {
     todolists: []
 };
-
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
