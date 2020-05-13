@@ -23,9 +23,6 @@ class TodoListTask extends React.Component {
         this.setState({editMode: false});
     };
 
-    // deleteTodoList = (taskId) ={
-    //     this.props.deleteTodoList(this.props.task.id)
-    // };
     deleteTask = () => {
         this.props.deleteTask(this.props.task.id)
     };
@@ -49,27 +46,6 @@ class TodoListTask extends React.Component {
     }
 }
 
-// const mapStateToProps = (state) => {
-//     return {
-//         todolists: state.todolists
-//     }
-// };
-//
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         deleteTodoList: (taskId) => {
-//             const action = {
-//                 type: "DELETE-TODOLIST",
-//                 taskId: taskId
-//             };
-//             dispatch(action)
-//         }
-//     }
-// };
-//
-//
-// const ConnectedTodoListTask = connect(mapStateToProps, mapDispatchToProps)(TodoListTask);
-//
 
 export default TodoListTask;
 

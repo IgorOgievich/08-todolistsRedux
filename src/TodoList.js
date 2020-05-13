@@ -5,15 +5,8 @@ import TodoListFooter from "./TodoListFooter";
 import TodoListTitle from "./TodoListTitle";
 import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
-import {
-    ADD_TASK,
-    addTaskAC,
-    CHANGE_TASK,
-    changeTaskAC,
-    DELETE_TASK,
-    DELETE_TODOLIST, deleteTaskAC,
-    deleteTodolistAC
-} from "./reducer";
+import {addTaskAC, changeTaskAC, deleteTaskAC, deleteTodolistAC, setTasksAC, setTodolistsAC} from "./reducer";
+import axios from "axios";
 
 class TodoList extends React.Component {
 
@@ -26,32 +19,25 @@ class TodoList extends React.Component {
         this.restoreState();
     }
 
-    saveState = () => {
-        // переводим объект в строку
-        let stateAsString = JSON.stringify(this.state);
-        // сохраняем нашу строку в localStorage под ключом "our-state"
-        localStorage.setItem("our-state-" + this.props.id, stateAsString);
-    };
+    // saveState = () => {
+    //     // переводим объект в строку
+    //     let stateAsString = JSON.stringify(this.state);
+    //     // сохраняем нашу строку в localStorage под ключом "our-state"
+    //     localStorage.setItem("our-state-" + this.props.id, stateAsString);
+    // };
 
     restoreState = () => {
-        // объявляем наш стейт стартовый
-        let state = this.state;
-        // считываем сохранённую ранее строку из localStorage
-        let stateAsString = localStorage.getItem("our-state-" + this.props.id);
-        // а вдруг ещё не было ни одного сохранения?? тогда будет null.
-        // если не null, тогда превращаем строку в объект
-        if (stateAsString != null) {
-            state = JSON.parse(stateAsString);
-        }
-        // устанавливаем стейт (либо пустой, либо восстановленный) в стейт
-        this.setState(state, () => {
-            this.state.tasks.forEach(t => {
-                if (t.id >= this.nextTaskId) {
-                    this.nextTaskId = t.id + 1;
-                }
-            })
-        });
-    }
+        axios.get(`https://social-network.samuraijs.com/api/1.1//todo-lists/${this.props.id}/tasks`,
+            {
+                withCredentials: true,
+                headers: {"API-KEY" : "affe6fba-b980-44f3-83ec-8eb8f1646ae1"}
+            }
+            )
+            .then(res => {
+                let allTasks = res.data.items;
+                this.props.setTasks(allTasks, this.props.id);
+            });
+    };
 
     nextTaskId = 0;
 
@@ -61,24 +47,36 @@ class TodoList extends React.Component {
     };
 
     addTask = (newText) => {
-        let newTask = {
-            id: this.nextTaskId,
-            title: newText,
-            isDone: false,
-            priority: "low"
-        };
-        // инкрементим (увеличим) id следующей таски, чтобы при следюущем добавлении, он был на 1 больше
-        this.nextTaskId++;
-        this.props.addTask(newTask, this.props.id)
-        // let newTasks = [...this.state.tasks, newTask];
-        // this.setState( {
-        //     tasks: newTasks
-        // }, () => { this.saveState(); });
-
+        axios.post(
+            `https://social-network.samuraijs.com/api/1.1//todo-lists/${this.props.id}/tasks`,
+            {title:newText},
+            {
+                withCredentials: true,
+                headers: {"API-KEY" : "affe6fba-b980-44f3-83ec-8eb8f1646ae1"}
+            }
+        )
+            .then(response => {
+                if (response.data.resultCode === 0) {
+                    this.props.addTask(response.data.data.item, this.props.id );
+                }
+            })
+        // this.props.addTask(newTask, this.props.id)
     };
 
-    deleteTodolist = () => {
-        this.props.deleteTodolist(this.props.id)
+    deleteTodolist = (todolistId) => {
+        axios.delete(
+            `https://social-network.samuraijs.com/api/1.1//todo-lists/${this.props.id}`,
+            {
+                withCredentials: true,
+                headers: {"API-KEY" : "affe6fba-b980-44f3-83ec-8eb8f1646ae1"}
+            }
+        )
+            .then(response => {
+                if (response.data.resultCode === 0) {
+                    this.props.deleteTodolist(this.props.id);
+                }
+            })
+        // this.props.deleteTodolist(this.props.id)
     };
 
     deleteTask = (taskId) => {
@@ -86,17 +84,18 @@ class TodoList extends React.Component {
     };
 
     changeFilter = (newFilterValue) => {
-        this.setState( {
+        this.setState({
             filterValue: newFilterValue
-        }, () => { this.saveState(); });
+        }, () => {
+            this.saveState();
+        });
     };
 
     changeTask = (taskId, obj) => {
         let newTasks = this.state.tasks.map(t => {
             if (t.id != taskId) {
                 return t;
-            }
-            else {
+            } else {
                 return {...t, ...obj};
             }
         });
@@ -114,33 +113,33 @@ class TodoList extends React.Component {
     };
 
     render = () => {
+        let {tasks =[]} = this.props;
         return (
-                <div className="todoList">
-                    <div className="todoList-header">
-                        <div className="todoList-button">
-                            <TodoListTitle title={this.props.title}/>
+            <div className="todoList">
+                <div className="todoList-header">
+                    <div className="todoList-button">
+                        <TodoListTitle title={this.props.title}/>
                         <button onClick={this.deleteTodolist}>x</button>
-                        </div>
-                            <AddNewItemForm addItem={this.addTask} />
                     </div>
-
-                    <TodoListTasks changeStatus={this.changeStatus }
-                                   changeTitle={this.changeTitle }
-                                   deleteTask ={this.deleteTask}
-                                   tasks={this.props.tasks.filter(t => {
-                        if (this.state.filterValue === "All") {
-                            return true;
-                        }
-                        if (this.state.filterValue === "Active") {
-                            return t.isDone === false;
-                        }
-                        if (this.state.filterValue === "Completed") {
-                            return t.isDone === true;
-                        }
-                    })}/>
-                    <TodoListFooter changeFilter={this.changeFilter} filterValue={this.state.filterValue} />
+                    <AddNewItemForm addItem={this.addTask}/>
                 </div>
 
+                <TodoListTasks changeStatus={this.changeStatus}
+                               changeTitle={this.changeTitle}
+                               deleteTask={this.deleteTask}
+                               tasks={tasks.filter(t => {
+                                   if (this.state.filterValue === "All") {
+                                       return true;
+                                   }
+                                   if (this.state.filterValue === "Active") {
+                                       return t.isDone === false;
+                                   }
+                                   if (this.state.filterValue === "Completed") {
+                                       return t.isDone === true;
+                                   }
+                               })}/>
+                <TodoListFooter changeFilter={this.changeFilter} filterValue={this.state.filterValue}/>
+            </div>
         );
     }
 }
@@ -152,8 +151,8 @@ const mapStateToProps = (state) => {
     }
 };
 
-const mapDispatchToProps =(dispatch) => {
-    return{
+const mapDispatchToProps = (dispatch) => {
+    return {
         addTask: (newTask, todolistsId) => {
             dispatch(addTaskAC(newTask, todolistsId))
         },
@@ -163,8 +162,11 @@ const mapDispatchToProps =(dispatch) => {
         deleteTodolist: (todolistsId) => {
             dispatch(deleteTodolistAC(todolistsId))
         },
-        deleteTask: (todolistsId,taskId) => {
-            dispatch(deleteTaskAC(todolistsId,taskId))
+        deleteTask: (todolistsId, taskId) => {
+            dispatch(deleteTaskAC(todolistsId, taskId))
+        },
+        setTasks: (todolistId, tasks) => {
+            dispatch(setTasksAC(todolistId, tasks))
         }
     }
 };

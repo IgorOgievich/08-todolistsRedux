@@ -3,6 +3,8 @@ export const ADD_TASK = "TodoList/reducer/ADD-TASK";
 export const CHANGE_TASK = "TodoList/reducer/CHANGE-TASK";
 export const DELETE_TODOLIST = "TodoList/reducer/DELETE-TODOLIST";
 export const DELETE_TASK = "TodoList/reducer/DELETE-TASK";
+export const SET_TODOLISTS = "TodoList/reducer/SET-TODOLISTS";
+export const SET_TASKS = "TodoList/reducer/SET-TASKS";
 
 
 const initialState = {
@@ -20,7 +22,7 @@ export const addTaskAC = (newTask, todolistsId) => {
     return {
         type: ADD_TASK,
         newTask: newTask,
-        todolistsId: todolistsId,
+        todolistsId: todolistsId
     }
 };
 export const changeTaskAC = (taskId, obj, todolistsId) => {
@@ -46,12 +48,28 @@ export const deleteTaskAC = (todolistsId,taskId) => {
     }
 };
 
+
+export const setTodolistsAC= (todolists, todolistsId) => {
+    return {
+        type: SET_TODOLISTS,
+        todolists: todolists,
+        todolistsId: todolistsId
+    }
+};
+export const setTasksAC= (tasks) => {
+    return {
+        type: SET_TASKS,
+        tasks: tasks
+    }
+};
+
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_TODOLIST:
             let newTodoList = [...state.todolists, action.newTodolist];
             return {...state, todolists: newTodoList};
         case ADD_TASK:
+            debugger
             return {
                 ...state, todolists: state.todolists.map(todo => {
                     if (todo.id === action.todolistsId) {
@@ -83,6 +101,14 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state, todolists: state.todolists.filter(todo => todo.id !== action.todolistsId)
             };
+        case SET_TODOLISTS:
+            return {
+                ...state, todolists: action.todolists.map(tl => ({...tl, tasks: []}))
+            };
+        // case SET_TASKS:
+        //     return {
+        //         ...state, todolists: action.todolists
+        //     };
         case DELETE_TASK:
             return {
                 ...state, todolists: state.todolists.map(todo => {
