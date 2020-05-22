@@ -10,8 +10,6 @@ import api from "./api";
 
 class App extends React.Component {
 
-    nextTodoListId = 0;
-
     state = {
         todolists: []
     };
@@ -23,8 +21,6 @@ class App extends React.Component {
                     this.props.addTodolist(response.data.data.item);
                 }
             })
-
-        // this.props.addTodolist(newTodoList);
     };
 
 

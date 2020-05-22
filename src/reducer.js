@@ -5,6 +5,8 @@ export const DELETE_TODOLIST = "TodoList/reducer/DELETE-TODOLIST";
 export const DELETE_TASK = "TodoList/reducer/DELETE-TASK";
 export const SET_TODOLISTS = "TodoList/reducer/SET-TODOLISTS";
 export const SET_TASKS = "TodoList/reducer/SET-TASKS";
+export const CHANGE_TITLE_TODOLIST = "TodoList/reducer/CHANGE-TITLE-TODOLIST";
+
 
 
 const initialState = {
@@ -25,11 +27,10 @@ export const addTaskAC = (newTask, todolistsId) => {
         todolistsId: todolistsId
     }
 };
-export const changeTaskAC = (task, todolistsId) => {
+export const changeTaskAC = (task) => {
     return {
         type: CHANGE_TASK,
-        task: task,
-        todolistsId: todolistsId
+        task: task
     }
 };
 export const deleteTodolistAC = (todolistsId) => {
@@ -63,6 +64,14 @@ export const setTasksAC = (todolistsId, tasks) => {
     }
 };
 
+export const changeTitleTodoList = (todolistsId, title) => {
+    return{
+        type: CHANGE_TITLE_TODOLIST,
+        titlr: title,
+        todolistsId: todolistsId
+    }
+};
+
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_TODOLIST:
@@ -81,7 +90,7 @@ export const reducer = (state = initialState, action) => {
         case CHANGE_TASK:
             return {
                 ...state, todolists: state.todolists.map(todolist => {
-                    if (todolist.id === action.todolistsId) {
+                    if (todolist.id === action.task.todolistsId) {
                         return {
                             ...todolist, tasks: todolist.tasks.map(task => {
                                 if (task.id !== action.task.id
@@ -124,7 +133,17 @@ export const reducer = (state = initialState, action) => {
                         return todo
                     }
                 })
-            }
+            };
+        case CHANGE_TITLE_TODOLIST:
+            return {
+                ...state, todolists: state.todolists.map(tl => {
+                    if(tl.id === action.todolistsId) {
+                        return {...tl, title: action.title}
+                    }else {
+                        return tl
+                    }
+                })
+            };
     }
     return state;
 };
