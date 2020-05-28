@@ -3,9 +3,9 @@ import './App.css';
 import TodoList from "./TodoList";
 import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
-import {ADD_TODOLIST, addTodolistAC, SET_TODOLISTS, setTodolistsAC} from "./reducer";
-import axios from "axios";
+import {ADD_TODOLIST, addTodolistAC, getTodoListsTC, SET_TODOLISTS, setTodolistsAC} from "./reducer";
 import api from "./api";
+
 
 
 class App extends React.Component {
@@ -23,11 +23,9 @@ class App extends React.Component {
             })
     };
 
-
     componentDidMount() {
         this.restoreState();
     }
-
 
     saveState = () => {
         // переводим объект в строку
@@ -36,15 +34,13 @@ class App extends React.Component {
         localStorage.setItem("todolists-state", stateAsString);
     };
 
-
     restoreState = () => {
-       api.getTodoList()
-            .then(res => {
-                this.props.setTodolists(res.data);
-            });
+        this.props.getTodoLists()
+       // api.getTodoList()
+       //      .then(res => {
+       //          this.props.setTodolists(res.data);
+       //      });
     };
-
-
 
     render = () => {
         const todolists = this.props.todolists
@@ -74,8 +70,12 @@ const mapDispatchToProps =(dispatch) => {
         addTodolist: (newTodolist) => {
             dispatch(addTodolistAC(newTodolist))
         },
-        setTodolists: (todolists) => {
-            dispatch(setTodolistsAC(todolists))
+        // setTodolists: (todolists) => {
+        //     dispatch(setTodolistsAC())
+        // },
+        getTodoLists: () => {
+            const thunk = getTodoListsTC;
+            dispatch(thunk)
         }
     }
 };

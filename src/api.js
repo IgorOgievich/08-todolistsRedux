@@ -19,6 +19,7 @@ const api =  {
       return  instance.get("")
     },
     getTasks(todoListId) {
+        debugger
        return instance.get(`/${todoListId}/tasks`)
     },
     createTasks(newText, todoListId) {
@@ -38,7 +39,7 @@ const api =  {
         )
     },
     createTask(t, obj) {
-        return axios.put(
+        return instance.put(
             `https://social-network.samuraijs.com/api/1.1//todo-lists/${t.todoListId}/tasks/${t.id}`,
             {...t, ...obj},
             {

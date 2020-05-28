@@ -1,3 +1,5 @@
+import api from "./api";
+
 export const ADD_TODOLIST = "TodoList/reducer/ADD-TODOLIST";
 export const ADD_TASK = "TodoList/reducer/ADD-TASK";
 export const CHANGE_TASK = "TodoList/reducer/CHANGE-TASK";
@@ -146,6 +148,26 @@ export const reducer = (state = initialState, action) => {
             };
     }
     return state;
+};
+
+//Thunk
+
+export const getTodoListsTC = (dispatch, getState) => {
+    api.getTodoList()
+         .then(res => {
+             dispatch(setTodolistsAC(res.data));
+         });
+};
+
+export const getTasksTC = (dispatch, getState,) => {
+    debugger
+    api.getTasks()
+         .then(res => {
+             debugger
+             let allTasks = res.data.items;
+             dispatch(setTasksAC(this.props.id, allTasks));
+         });
+
 };
 
 

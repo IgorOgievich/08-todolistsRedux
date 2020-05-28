@@ -10,7 +10,7 @@ import {
     changeTaskAC,
     changeTitleTodoList,
     deleteTaskAC,
-    deleteTodolistAC,
+    deleteTodolistAC, getTasksTC, getTodoListsTC,
     setTasksAC,
     setTodolistsAC
 } from "./reducer";
@@ -19,21 +19,24 @@ import api from "./api";
 
 class TodoList extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.newTasksTitileRef = React.createRef();
-    }
+
+    // constructor(props) {
+    //     super(props);
+    //     this.newTasksTitileRef = React.createRef();
+    // }
 
     componentDidMount() {
         this.restoreState();
     }
 
     restoreState = () => {
-       api.getTasks(this.props.id)
-            .then(res => {
-                let allTasks = res.data.items;
-                this.props.setTasks(this.props.id, allTasks);
-            });
+        this.props.getTasks(this.props.id);
+        debugger
+       // api.getTasks(this.props.id)
+       //      .then(res => {
+       //          let allTasks = res.data.items;
+       //          this.props.setTasks(this.props.id, allTasks);
+       //      });
     };
 
     nextTaskId = 0;
@@ -100,9 +103,8 @@ class TodoList extends React.Component {
                 if(response.data.resultCode === 0)
                     this.props.changeTitleTodoList(this.props.id, title)
             });
-        // this.props.changeTitleTodoList(this.props.id, title)
-
     };
+
     render = () => {
         let {tasks =[]} = this.props;
         return (
@@ -155,9 +157,13 @@ const mapDispatchToProps = (dispatch) => {
         deleteTask: (todolistsId, taskId) => {
             dispatch(deleteTaskAC(todolistsId, taskId))
         },
-        setTasks: (todolistsId, tasks) => {
-            dispatch(setTasksAC(todolistsId, tasks))
+        getTasks: () => {
+            const thunk = getTasksTC;
+            dispatch(thunk)
         },
+        // setTasks: (todolistsId, tasks) => {
+        //     dispatch(setTasksAC(todolistsId, tasks))
+        // },
         changeTitleTodoList: (todolistsId, title) => {
             dispatch(changeTitleTodoList(todolistsId, title))
         }
