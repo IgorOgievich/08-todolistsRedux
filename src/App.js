@@ -23,23 +23,23 @@ class App extends React.Component {
     };
 
     componentDidMount() {
-        this.restoreState();
+        this.props.getTodoLists()
     }
 
-    saveState = () => {
-        // переводим объект в строку
-        let stateAsString = JSON.stringify(this.state);
-        // сохраняем нашу строку в localStorage под ключом "our-state"
-        localStorage.setItem("todolists-state", stateAsString);
-    };
+    // saveState = () => {
+    //     // переводим объект в строку
+    //     let stateAsString = JSON.stringify(this.state);
+    //     // сохраняем нашу строку в localStorage под ключом "our-state"
+    //     localStorage.setItem("todolists-state", stateAsString);
+    // };
 
-    restoreState = () => {
-        this.props.getTodoLists()
+    // restoreState = () => {
+        // this.props.getTodoLists()
         // api.getTodoList()
         //      .then(res => {
         //          this.props.setTodolists(res.data);
         //      });
-    };
+    // };
 
     render = () => {
         const todolists = this.props.todolists
@@ -67,8 +67,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getTodoLists: () => {
-            const thunk = getTodoListsTC;
-            dispatch(thunk)
+            dispatch(getTodoListsTC)
         },
         postTodoList: (title) => {
             dispatch(postTodoListTC(title))

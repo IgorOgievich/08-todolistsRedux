@@ -7,7 +7,6 @@ import AddNewItemForm from "./AddNewItemForm";
 import {connect} from "react-redux";
 import {
     changedTaskTC,
-    changeTaskAC,
     changeTitleTodoListTC,
     deleteTaskTC,
     deleteTodoListTC, getTasksTC, postTaskTC,
@@ -67,9 +66,7 @@ class TodoList extends React.Component {
     changeFilter = (newFilterValue) => {
         this.setState({
             filterValue: newFilterValue
-        }, () => {
-            this.saveState();
-        });
+        }, );
     };
 
     changedTask = (task, status) => {
@@ -146,21 +143,12 @@ const mapDispatchToProps = (dispatch) => {
         deleteTodoList: (todoListId) => {
             dispatch(deleteTodoListTC(todoListId))
         },
-        // deleteTodolist: (todolistsId) => {
-        //     dispatch(deleteTodolistAC(todolistsId))
-        // },
-        // deleteTask: (todolistsId, taskId) => {
-        //     dispatch(deleteTaskAC(todolistsId, taskId))
-        // },
         deleteTask: (taskId, todoListId) => {
             dispatch(deleteTaskTC(taskId, todoListId))
         },
         getTasks: (todoListId) => {
             dispatch(getTasksTC(todoListId))
         },
-        // setTasks: (todolistsId, tasks) => {
-        //     dispatch(setTasksAC(todolistsId, tasks))
-        // },
         changeTitleTodoList: (title, todolistsId) => {
             dispatch(changeTitleTodoListTC(title, todolistsId))
         }

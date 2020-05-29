@@ -43,6 +43,7 @@ export const deleteTodolistAC = (todolistsId) => {
 };
 
 export const deleteTaskAC = (todolistsId,taskId) => {
+    debugger
     return {
         type: DELETE_TASK,
         todolistsId: todolistsId,
@@ -92,7 +93,7 @@ export const reducer = (state = initialState, action) => {
         case CHANGE_TASK:
             return {
                 ...state, todolists: state.todolists.map(todolist => {
-                    if (todolist.id === action.task.todolistsId) {
+                    if (todolist.id !== action.task.todolistsId) {
                         return {
                             ...todolist, tasks: todolist.tasks.map(task => {
                                 if (task.id !== action.task.id
@@ -130,6 +131,7 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state, todolists: state.todolists.map(todo => {
                     if (todo.id === action.todolistsId) {
+                        debugger
                         return {...todo, tasks: todo.tasks.filter(task => task.id !== action.taskId)}
                     } else {
                         return todo
