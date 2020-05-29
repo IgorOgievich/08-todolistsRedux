@@ -19,7 +19,6 @@ const api =  {
       return  instance.get("")
     },
     getTasks(todoListId) {
-        debugger
        return instance.get(`/${todoListId}/tasks`)
     },
     createTasks(newText, todoListId) {
@@ -40,15 +39,11 @@ const api =  {
     },
     createTask(t, obj) {
         return instance.put(
-            `https://social-network.samuraijs.com/api/1.1//todo-lists/${t.todoListId}/tasks/${t.id}`,
+            `/${t.todoListId}/tasks/${t.id}`,
             {...t, ...obj},
-            {
-                withCredentials: true,
-                headers: {"API-KEY": "affe6fba-b980-44f3-83ec-8eb8f1646ae1"}
-            }
         )
     },
-    createTitleTodolist(todoListId, title) {
+    createTitleTodolist(title, todoListId) {
         return  instance.put(
             `${todoListId}`,
             {title: title},

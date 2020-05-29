@@ -66,10 +66,10 @@ export const setTasksAC = (todolistsId, tasks) => {
     }
 };
 
-export const changeTitleTodoList = (todolistsId, title) => {
+export const changeTitleTodoList = (title, todolistsId) => {
     return{
         type: CHANGE_TITLE_TODOLIST,
-        titlr: title,
+        title: title,
         todolistsId: todolistsId
     }
 };
@@ -152,22 +152,70 @@ export const reducer = (state = initialState, action) => {
 
 //Thunk
 
-export const getTodoListsTC = (dispatch, getState) => {
+export const getTodoListsTC = (dispatch) => {
     api.getTodoList()
          .then(res => {
              dispatch(setTodolistsAC(res.data));
          });
 };
 
-export const getTasksTC = (dispatch, getState,) => {
-    debugger
-    api.getTasks()
+export const getTasksTC = (todoListId)=> (dispatch) => {  //!!!!!!!!!!!!!!!!!!!!!!
+    api.getTasks(todoListId)
          .then(res => {
-             debugger
              let allTasks = res.data.items;
-             dispatch(setTasksAC(this.props.id, allTasks));
+             dispatch(setTasksAC(todoListId, allTasks));
          });
 
+};
+
+export const postTodoListTC = (title) => (dispatch) => {
+    api.createTodoList(title)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(addTodolistAC(response.data.data.item));
+            }
+        })
+};
+
+export const postTaskTC = (newText, todolistsId) => (dispatch) => {
+    api.createTasks(newText, todolistsId)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(addTaskAC(response.data.data.item, todolistsId));
+            }
+        })
+};
+export const deleteTodoListTC = (todoListId)  => (dispatch) => {
+api.deleteTodoList(todoListId)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(deleteTodolistAC(todoListId));
+            }
+        })
+};
+export const deleteTaskTC = (taskId, todoListId) => (dispatch) => {
+    api.deleteTask(todoListId, taskId)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+               dispatch(deleteTaskAC(todoListId, taskId));
+            }
+        })
+};
+
+export const changeTitleTodoListTC = (title, todolistsId) => (dispatch) => {
+    api.createTitleTodolist(title, todolistsId)
+        .then(response => {
+            if(response.data.resultCode === 0)
+               dispatch(changeTitleTodoList(title, todolistsId))
+        });
+};
+
+export const changedTaskTC = (task, status) => (dispatch) => {
+    api.createTask(task, status)
+        .then(response => {
+            if(response.data.resultCode === 0)
+            dispatch(changeTaskAC(response.data.data.item))
+        });
 };
 
 
